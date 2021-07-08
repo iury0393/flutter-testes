@@ -6,21 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'matcher.dart';
-import 'mocks.dart';
+import '../matchers/matcher.dart';
+import '../mocks/mocks.dart';
+import 'actions.dart';
 
 void main() {
+  MockContactDao mockContactDao;
+
+  setUp(() async {
+    mockContactDao = MockContactDao();
+  });
   testWidgets('Should save a contact', (tester) async {
-    final mockContactDao = MockContactDao();
     await tester.pumpWidget(BytebankApp(
       contactDao: mockContactDao,
     ));
 
-    final transferFeatureItem = find.byWidgetPredicate(
-      (widget) => featureItemMatch(widget, 'Transfer', Icons.monetization_on),
-    );
-    expect(transferFeatureItem, findsOneWidget);
-    await tester.tap(transferFeatureItem);
+    await clickOnTheTransferFeatureItem(tester);
     await tester.pumpAndSettle();
 
     final contactsList = find.byType(ContactsList);
